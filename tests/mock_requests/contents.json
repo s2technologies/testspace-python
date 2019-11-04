@@ -1,0 +1,152 @@
+[
+    {
+        "id": 8351241,
+        "name": "not tracked",
+        "description": null,
+        "type": "suite",
+        "path": "not tracked",
+        "case_counts": [
+            1,
+            0,
+            1,
+            0
+        ],
+        "annotation_counts": [
+            0,
+            0,
+            0
+        ],
+        "failure_counts": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+        ],
+        "duration": 0.0,
+        "custom_data": {},
+        "status": "passed",
+        "download_url": "https://abccorp.testspace.com/api/files/1082435"
+    },
+    {
+        "id": 8351242,
+        "name": "consistent",
+        "description": null,
+        "type": "suite",
+        "path": "consistent",
+        "case_counts": [
+            0,
+            2,
+            0,
+            1
+        ],
+        "annotation_counts": [
+            0,
+            0,
+            0
+        ],
+        "failure_counts": [
+            0,
+            0,
+            3,
+            0,
+            0,
+            0
+        ],
+        "duration": 0.0,
+        "custom_data": {},
+        "status": "failed",
+        "download_url": "https://abccorp.testspace.com/api/files/1082436"
+    },
+    {
+        "id": 8351243,
+        "name": "flaky",
+        "description": null,
+        "type": "suite",
+        "path": "flaky",
+        "case_counts": [
+            1,
+            3,
+            0,
+            0
+        ],
+        "annotation_counts": [
+            0,
+            0,
+            0
+        ],
+        "failure_counts": [
+            0,
+            4,
+            0,
+            0,
+            0,
+            0
+        ],
+        "duration": 0.0,
+        "custom_data": {},
+        "status": "failed",
+        "download_url": "https://abccorp.testspace.com/api/files/1082437"
+    },
+    {
+        "id": 8351244,
+        "name": "passing",
+        "description": null,
+        "type": "suite",
+        "path": "passing",
+        "case_counts": [
+            1,
+            0,
+            0,
+            0
+        ],
+        "annotation_counts": [
+            0,
+            0,
+            0
+        ],
+        "failure_counts": [
+            0,
+            0,
+            0,
+            1,
+            0,
+            0
+        ],
+        "duration": 0.0,
+        "custom_data": {},
+        "status": "passed",
+        "download_url": "https://abccorp.testspace.com/api/files/1082438"
+    },
+    {
+        "id": 8351245,
+        "name": "resolved",
+        "description": null,
+        "type": "suite",
+        "path": "resolved",
+        "case_counts": [
+            1,
+            0,
+            0,
+            0
+        ],
+        "annotation_counts": [
+            0,
+            0,
+            0
+        ],
+        "failure_counts": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+        ],
+        "duration": 0.0,
+        "custom_data": {},
+        "status": "passed",
+        "download_url": "https://abccorp.testspace.com/api/files/1082439"
+    }
+]

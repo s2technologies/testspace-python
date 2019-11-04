@@ -1,0 +1,146 @@
+[
+    {
+        "key": "consistent().failed",
+        "history": [
+            "F",
+            "F",
+            "F",
+            "F",
+            "F"
+        ],
+        "state": "consistent",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.496+00:00",
+        "passed_at": null,
+        "tracked_count": 6
+    },
+    {
+        "key": "consistent().failed with missing",
+        "history": [
+            "F",
+            "M",
+            "F",
+            "M",
+            "F"
+        ],
+        "state": "consistent",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.497+00:00",
+        "passed_at": "2019-09-26T21:39:08.196+00:00",
+        "tracked_count": 6
+    },
+    {
+        "key": "consistent().errored",
+        "history": [
+            "E",
+            "E",
+            "E",
+            "E",
+            "E"
+        ],
+        "state": "consistent",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.498+00:00",
+        "passed_at": null,
+        "tracked_count": 6
+    },
+    {
+        "key": "flaky().alternating passed/failed",
+        "history": [
+            "F",
+            "P",
+            "F",
+            "P",
+            "F"
+        ],
+        "state": "flaky",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:12.173+00:00",
+        "passed_at": null,
+        "tracked_count": 6
+    },
+    {
+        "key": "flaky().failed with errored",
+        "history": [
+            "F",
+            "E",
+            "F",
+            "F",
+            "F"
+        ],
+        "state": "flaky",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.500+00:00",
+        "passed_at": null,
+        "tracked_count": 6
+    },
+    {
+        "key": "flaky().failed with not_applicable",
+        "history": [
+            "F",
+            "F",
+            "N",
+            "F",
+            "F"
+        ],
+        "state": "flaky",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:08.202+00:00",
+        "passed_at": null,
+        "tracked_count": 6
+    },
+    {
+        "key": "flaky().Passing with errored",
+        "history": [
+            "E",
+            "P",
+            "P",
+            "E",
+            "P"
+        ],
+        "state": "flaky",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:08.203+00:00",
+        "passed_at": "2019-09-26T21:39:12.169+00:00",
+        "tracked_count": 5
+    },
+    {
+        "key": "passing().latest passed",
+        "history": [
+            "F",
+            "F",
+            "F",
+            "F",
+            "P"
+        ],
+        "state": "passing",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.501+00:00",
+        "passed_at": "2019-09-26T21:39:12.171+00:00",
+        "tracked_count": 6
+    },
+    {
+        "key": "resolved().five passed",
+        "history": [
+            "P",
+            "P",
+            "P",
+            "P",
+            "P"
+        ],
+        "state": "resolved",
+        "exempt": false,
+        "message": null,
+        "failed_at": "2019-09-26T21:39:02.502+00:00",
+        "passed_at": "2019-09-26T21:39:04.238+00:00",
+        "tracked_count": 0
+    }
+]

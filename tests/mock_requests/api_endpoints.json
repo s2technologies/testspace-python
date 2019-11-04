@@ -1,0 +1,9 @@
+{
+    "projects_url": "https://s2.testspace.com/api/projects",
+    "project_url": "https://s2.testspace.com/api/projects/{project}",
+    "spaces_url": "https://s2.testspace.com/api/projects/{project}/spaces",
+    "space_url": "https://s2.testspace.com/api/projects/{project}/spaces/{space}",
+    "results_url": "https://s2.testspace.com/api/projects/{project}/spaces/{space}/results",
+    "result_url": "https://s2.testspace.com/api/projects/{project}/spaces/{space}/results/{result}",
+    "users_url": "https://s2.testspace.com/api/users"
+}
