@@ -8,7 +8,7 @@ from testspace import testspace as ts
 
 @pytest.fixture(scope="function")
 def load_json(request):
-    with open(os.path.join("mock_requests", request.param)) as file_handle:
+    with open(os.path.join("tests", "mock_requests", request.param)) as file_handle:
         return json.load(file_handle)
 
 
@@ -399,7 +399,7 @@ def test_get_result_contents_nested(load_json, testspace_api, requests_mock):
         ),
         json=load_json,
     )
-    response_json = testspace_api.get_result_contents(result, path="tests")
+    response_json = testspace_api.get_result_contents(result, contents_path="tests")
 
     assert response_json == load_json
 
