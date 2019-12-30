@@ -31,10 +31,7 @@ def test_get_api_endpoints(load_json, testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["api_endpoints.json"], indirect=True)
 def test_get_api_endpoints_url_https(load_json, testspace_api, requests_mock):
-    url = "{}://{}".format("https", testspace_api.url)
-    testspace_url = "/".join([url, "api"])
-
-    testspace_api = ts.Testspace(testspace_api.token, url)
+    testspace_url = "/".join([testspace_api.url, "api"])
 
     requests_mock.get(testspace_url, json=load_json)
     response_json = testspace_api.get_api_endpoints()
@@ -68,8 +65,7 @@ def test_get_projects(load_json, testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
 def test_get_projects_paginated(load_json, testspace_api, requests_mock):
-    url = testspace_api.url
-    testspace_url = "https://{}/api/projects".format(url)
+    testspace_url = "{}/api/projects".format(testspace_api.url)
 
     links_string_first = '<{}?page={}>; rel="{}"'.format(testspace_url, 1, "first")
     links_string_next = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "next")

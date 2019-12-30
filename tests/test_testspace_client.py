@@ -33,8 +33,7 @@ def test_push(mocker, testspace_client):
         message=message,
     )
 
-    url = "{}@{}/{}/{}?{}#{}".format(
-        testspace_client.token,
+    url = "{}/{}/{}?{}#{}".format(
         testspace_client.url,
         testspace_client.project,
         testspace_client.space,
@@ -50,7 +49,7 @@ def test_push(mocker, testspace_client):
 
     mock_call_args = mock.call_args_list[0][0]
     returned_push_command = mock_call_args[0]
-    assert expected_push_command == returned_push_command
+    assert " ".join(expected_push_command) == returned_push_command
 
 
 def test_push_project_none():

@@ -1,10 +1,10 @@
+import os
 import requests
 import subprocess
 
 
 class Testspace:
     def __init__(self, token, url, project=None, space=None, verify=True):
-        self.url = url
         self.project = project
         self.space = space
         self.verify = verify
@@ -13,15 +13,11 @@ class Testspace:
         if ":" not in token:
             self.token = "{}:".format(token)
 
-        split_url = self.url.split("://")
+        split_url = url.split("://")
         if len(split_url) > 1 and split_url[0] in ["http", "https"]:
-            self.client_url = "{}://{}@{}".format(
-                split_url[0], self.token, split_url[1]
-            )
-            self.api_url = "/".join([self.url, "api"])
+            self.url = url
         else:
-            self.client_url = "{}@{}".format(self.token, self.url)
-            self.api_url = "/".join(["{}://{}".format("https", self.url), "api"])
+            self.url = "{}://{}".format("https", url)
 
     def push(
         self,
@@ -49,7 +45,7 @@ class Testspace:
         if file is not None:
             command_args_list.append(file)
 
-        full_client_url = "/".join([self.client_url, project, space])
+        full_client_url = "/".join([self.url, project, space])
 
         if how is not None:
             if how not in ["full", "start", "add", "finish"]:
@@ -68,7 +64,12 @@ class Testspace:
         if message is not None:
             command_args_list.append("--message={}".format(message))
 
-        subprocess.run(command_args_list, check=True)
+        subprocess.run(
+            " ".join(command_args_list),
+            shell=True,
+            check=True,
+            env=dict(os.environ, TESTSPACE_TOKEN=self.token)
+        )
 
     def get_api_endpoints(self):
         return self.get_request_json()
@@ -205,7 +206,7 @@ class Testspace:
         return response
 
     def get_api_url(self):
-        return self.api_url
+        return "/".join([self.url, "api"])
 
     def get_projects_path(self):
         return "projects"
