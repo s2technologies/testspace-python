@@ -65,8 +65,7 @@ class Testspace:
             command_args_list.append("--message={}".format(message))
 
         subprocess.run(
-            " ".join(command_args_list),
-            shell=True,
+            command_args_list,
             check=True,
             env=dict(os.environ, TESTSPACE_TOKEN=self.token)
         )
