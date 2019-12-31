@@ -49,7 +49,7 @@ def test_push(mocker, testspace_client):
 
     mock_call_args = mock.call_args_list[0][0]
     returned_push_command = mock_call_args[0]
-    assert " ".join(expected_push_command) == returned_push_command
+    assert expected_push_command == returned_push_command
 
 
 def test_push_project_none():
