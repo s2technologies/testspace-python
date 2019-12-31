@@ -67,7 +67,7 @@ class Testspace:
         subprocess.run(
             command_args_list,
             check=True,
-            env=dict(os.environ, TESTSPACE_TOKEN=self.token)
+            env=dict(os.environ, TESTSPACE_TOKEN=self.token),
         )
 
     def get_api_endpoints(self):

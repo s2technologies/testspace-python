@@ -19,9 +19,6 @@ def test_http():
     space = "master"
     protocol = "http"
 
-    client_url = "{}://{}".format(protocol, url)
-    api_url = "{}://{}/api".format(protocol, url)
-
     testspace_url = "{}://{}".format(protocol, url)
     testspace = ts.Testspace(token, testspace_url, project, space)
     assert testspace.url == "{}://{}".format(protocol, url)
