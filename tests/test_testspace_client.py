@@ -33,8 +33,7 @@ def test_push(mocker, testspace_client):
         message=message,
     )
 
-    url = "{}@{}/{}/{}?{}#{}".format(
-        testspace_client.token,
+    url = "{}/{}/{}?{}#{}".format(
         testspace_client.url,
         testspace_client.project,
         testspace_client.space,
