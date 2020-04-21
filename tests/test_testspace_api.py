@@ -97,6 +97,15 @@ def test_get_projects_paginated(load_json, testspace_api, requests_mock):
 
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
+def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock):
+    requests_mock.get("/api/projects", json=load_json)
+    num_projects = 1
+    response_json = testspace_api.get_projects(limit=num_projects)
+
+    assert len(response_json) == num_projects
+
+
+@pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
 def test_get_project_name(load_json, testspace_api, requests_mock):
     project = testspace_api.project
     project_json = [item for item in load_json if item["name"] == project][0]

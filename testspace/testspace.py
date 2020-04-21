@@ -177,12 +177,12 @@ class Testspace:
         if type(limit) is not int or limit <= 0:
             raise ValueError
         response = self.get_request(path)
-        if len(response.links) == 0:
+        response_json = response.json()
+        if type(response_json) is not list:
             return response.json()
         else:
             next_url = response.links.get("next", None)
-            response_json = response.json()
-            while next_url is not None:
+            while next_url is not None and len(response_json) < limit:
                 response = self.get_request(next_url.get("url"))
                 next_url = response.links.get("next", None)
                 response_json.extend(response.json())
