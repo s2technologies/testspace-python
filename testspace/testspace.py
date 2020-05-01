@@ -174,19 +174,22 @@ class Testspace:
         return response
 
     def get_request_json(self, path=None, limit=30):
-        if type(limit) is not int or limit <= 0:
+        if limit is None:
+            pass
+        elif type(limit) is not int or limit <= 0:
             raise ValueError
         response = self.get_request(path)
         response_json = response.json()
-        if type(response_json) is not list:
-            return response.json()
-        else:
+        if type(response_json) is list:
             next_url = response.links.get("next", None)
-            while next_url is not None and len(response_json) < limit:
+            while next_url is not None:
                 response = self.get_request(next_url.get("url"))
                 next_url = response.links.get("next", None)
                 response_json.extend(response.json())
-        return response_json[:limit]
+                if limit is not None and len(response_json) >= limit:
+                    break
+            response_json = response_json[:limit]
+        return response_json
 
     def post_request(self, payload, path=None):
         response = self._api_request("POST", path=path, payload=payload)
