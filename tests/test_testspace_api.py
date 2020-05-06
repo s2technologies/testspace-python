@@ -89,6 +89,7 @@ def test_get_projects_paginated(load_json, testspace_api, requests_mock):
     response_json = testspace_api.get_projects(limit=None)
 
     project_names = [project["name"] for project in response_json]
+    assert len(response_json) == len(load_json)
     assert testspace_api.project in project_names
 
 
@@ -103,7 +104,7 @@ def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock)
 
     requests_mock.get(
         "/api/projects",
-        json=load_json[1:],
+        json=load_json,
         headers={
             "link": ", ".join(
                 [links_string_first, links_string_next, links_string_last]
@@ -111,11 +112,7 @@ def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock)
         },
         complete_qs=True,
     )
-    requests_mock.get(
-        "/api/projects?page=2",
-        json=load_json[:1],
-        headers={"link": ", ".join([links_string_first, links_string_last])},
-    )
+
     num_projects = 1
     response_json = testspace_api.get_projects(limit=num_projects)
 

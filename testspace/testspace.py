@@ -183,11 +183,11 @@ class Testspace:
         if type(response_json) is list:
             next_url = response.links.get("next", None)
             while next_url is not None:
+                if limit is not None and len(response_json) >= limit:
+                    break
                 response = self.get_request(next_url.get("url"))
                 next_url = response.links.get("next", None)
                 response_json.extend(response.json())
-                if limit is not None and len(response_json) >= limit:
-                    break
             response_json = response_json[:limit]
         return response_json
 
