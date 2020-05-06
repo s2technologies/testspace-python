@@ -86,40 +86,10 @@ def test_get_projects_paginated(load_json, testspace_api, requests_mock):
         json=load_json[:1],
         headers={"link": ", ".join([links_string_first, links_string_last])},
     )
-    response_json = testspace_api.get_projects(limit=None)
+    response_json = testspace_api.get_projects()
 
     project_names = [project["name"] for project in response_json]
     assert testspace_api.project in project_names
-
-
-@pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
-def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock):
-    url = testspace_api.url
-    testspace_url = "https://{}/api/projects".format(url)
-
-    links_string_first = '<{}?page={}>; rel="{}"'.format(testspace_url, 1, "first")
-    links_string_next = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "next")
-    links_string_last = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "last")
-
-    requests_mock.get(
-        "/api/projects",
-        json=load_json[1:],
-        headers={
-            "link": ", ".join(
-                [links_string_first, links_string_next, links_string_last]
-            )
-        },
-        complete_qs=True,
-    )
-    requests_mock.get(
-        "/api/projects?page=2",
-        json=load_json[:1],
-        headers={"link": ", ".join([links_string_first, links_string_last])},
-    )
-    num_projects = 1
-    response_json = testspace_api.get_projects(limit=num_projects)
-
-    assert len(response_json) == num_projects
 
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
