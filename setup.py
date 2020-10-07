@@ -28,10 +28,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Jeffrey Schultz",
     author_email="jschultz8960@yahoo.com",
-    url=(
-        "https://github.com/"
-        "s2technologies/testspace-python"
-    ),
+    url=("https://github.com/" "s2technologies/testspace-python"),
     license="MIT",
     packages=find_packages(),
     # include anything specified in Manifest.in
