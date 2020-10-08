@@ -44,7 +44,7 @@ jobs:
         pytest --junit-xml=testresults.xml
     - uses: testspace-com/setup-testspace@v1
       with:
-        domain: ${{github.repository_owner}}
+        domain: S2
     - name: Push test results
       run: |
         testspace [python-${{ matrix.python-version }}]testresults.xml
