@@ -109,7 +109,7 @@ testspace.get_result_contents(result, contents_path=None, project=None, space=No
 #### Metric Dataset
 ##### Get Metric Dataset
 ```
-# metric must be id as name resolution is not supported for this.
+# Metric must be id as name resolution is not supported.
 testspace.get_metric_datasets(metric, project=None, space=None, limit=30)
 ```
 ### Metrics
@@ -120,7 +120,7 @@ testspace.get_metrics(project=None, space=None, limit=30)
 ##### Get Metric for a Space
 ```
 # metric must be id as name resolution is not supported for this.
-testspace.get_metric(metric, project=None, space=None, limit=30)
+testspace.get_metric(metric, project=None, space=None)
 ```
 ##### Create a Space Metric
 ```
@@ -128,16 +128,16 @@ payload = {
   "name": "MyMetric",
   "data_source": "/path/to/suite[dataset_label]"
 }
-testspace.post_metrics(payload)
+testspace.post_metrics(payload, project=None, space=None)
 ```
 ##### Update a Space Metric
 ```
 payload = {
   "data_source": "/path/to/suite[dataset_label]"
 }
-testspace.patch_metrics(payload, metric)
+testspace.patch_metrics(payload, metric, project=None, space=None)
 ```
 ##### Delete a Space Metric
 ```
-testspace.delete_metric(metric)
+testspace.delete_metric(metric, project=None, space=None)
 ```
