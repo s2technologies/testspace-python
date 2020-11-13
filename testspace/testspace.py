@@ -117,8 +117,6 @@ class Testspace:
         return self.get_request_json(self.get_metrics_path(project, space), limit=limit)
 
     def get_metric(self, metric, project=None, space=None):
-        if type(metric) is not int:
-            raise ValueError
         return self.get_request_json(self.get_metric_path(metric, project, space))
 
     def get_metric_datasets(self, metric, project=None, space=None, limit=30):
@@ -130,14 +128,20 @@ class Testspace:
     def post_projects(self, payload):
         return self.post_request_json(path=self.get_projects_path(), payload=payload)
 
-    def post_spaces(self, payload):
-        return self.post_request_json(path=self.get_spaces_path(), payload=payload)
+    def post_spaces(self, payload, project=None):
+        return self.post_request_json(
+            path=self.get_spaces_path(project=project), payload=payload
+        )
 
-    def post_results(self, payload):
-        return self.post_request_json(path=self.get_results_path(), payload=payload)
+    def post_results(self, payload, project=None, space=None):
+        return self.post_request_json(
+            path=self.get_results_path(project=project, space=space), payload=payload
+        )
 
-    def post_metrics(self, payload):
-        return self.post_request_json(path=self.get_metrics_path(), payload=payload)
+    def post_metrics(self, payload, project=None, space=None):
+        return self.post_request_json(
+            path=self.get_metrics_path(project=project, space=space), payload=payload
+        )
 
     def patch_project(self, payload, project=None):
         return self.patch_request(
@@ -149,8 +153,11 @@ class Testspace:
             path=self.get_space_path(project=project, space=space), payload=payload
         )
 
-    def patch_metric(self, payload, metric):
-        return self.patch_request(path=self.get_metric_path(metric), payload=payload)
+    def patch_metric(self, payload, metric, project=None, space=None):
+        return self.patch_request(
+            path=self.get_metric_path(metric, project=project, space=space),
+            payload=payload,
+        )
 
     def patch_result(self, payload, result):
         return self.patch_request(path=self.get_result_path(result), payload=payload)
@@ -163,11 +170,15 @@ class Testspace:
             path=self.get_space_path(project=project, space=space)
         )
 
-    def delete_result(self, result):
-        return self.delete_request(path=self.get_result_path(result))
+    def delete_result(self, result, project=None, space=None):
+        return self.delete_request(
+            path=self.get_result_path(result, project=project, space=space)
+        )
 
-    def delete_metric(self, metric):
-        return self.delete_request(path=self.get_metric_path(metric))
+    def delete_metric(self, metric, project=None, space=None):
+        return self.delete_request(
+            path=self.get_metric_path(metric, project=project, space=space)
+        )
 
     def get_request(self, path=None):
         response = self._api_request("GET", path=path)
@@ -232,7 +243,6 @@ class Testspace:
                 space = self.space
             else:
                 raise ValueError
-
         return "/".join([self.get_spaces_path(project), str(space)])
 
     def get_results_path(self, project=None, space=None):
@@ -245,7 +255,10 @@ class Testspace:
         return "/".join([self.get_space_path(project, space), "metrics"])
 
     def get_metric_path(self, metric, project=None, space=None):
-        return "/".join([self.get_metrics_path(project, space), str(metric)])
+        metric_str = str(metric)
+        if str.isdigit(metric_str) is not True:
+            raise ValueError
+        return "/".join([self.get_metrics_path(project, space), metric_str])
 
     def _api_request(self, method, path, payload=None):
         if path is None:
