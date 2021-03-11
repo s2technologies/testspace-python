@@ -55,7 +55,8 @@ def test_get_api_endpoints_username_password(load_json, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
 def test_get_projects(load_json, testspace_api, requests_mock):
-    requests_mock.get("/api/projects", json=load_json)
+    api_projects_path = "/api/{}".format(testspace_api.get_projects_path())
+    requests_mock.get(api_projects_path, json=load_json)
     response_json = testspace_api.get_projects()
 
     assert response_json == load_json
@@ -65,14 +66,15 @@ def test_get_projects(load_json, testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
 def test_get_projects_paginated(load_json, testspace_api, requests_mock):
-    testspace_url = "{}/api/projects".format(testspace_api.url)
+    api_projects_path = "/api/{}".format(testspace_api.get_projects_path())
+    testspace_url = "{}{}".format(testspace_api.url, api_projects_path)
 
     links_string_first = '<{}?page={}>; rel="{}"'.format(testspace_url, 1, "first")
     links_string_next = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "next")
     links_string_last = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "last")
 
     requests_mock.get(
-        "/api/projects",
+        api_projects_path,
         json=load_json[1:],
         headers={
             "link": ", ".join(
@@ -82,7 +84,7 @@ def test_get_projects_paginated(load_json, testspace_api, requests_mock):
         complete_qs=True,
     )
     requests_mock.get(
-        "/api/projects?page=2",
+        "{}?page=2".format(api_projects_path),
         json=load_json[:1],
         headers={"link": ", ".join([links_string_first, links_string_last])},
     )
@@ -95,15 +97,15 @@ def test_get_projects_paginated(load_json, testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
 def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock):
-    url = testspace_api.url
-    testspace_url = "https://{}/api/projects".format(url)
+    api_projects_path = "/api/{}".format(testspace_api.get_projects_path())
+    testspace_url = "https://{}{}".format(testspace_api.url, api_projects_path)
 
     links_string_first = '<{}?page={}>; rel="{}"'.format(testspace_url, 1, "first")
     links_string_next = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "next")
     links_string_last = '<{}?page={}>; rel="{}"'.format(testspace_url, 2, "last")
 
     requests_mock.get(
-        "/api/projects",
+        api_projects_path,
         json=load_json,
         headers={
             "link": ", ".join(
@@ -124,7 +126,9 @@ def test_get_project_name(load_json, testspace_api, requests_mock):
     project = testspace_api.project
     project_json = [item for item in load_json if item["name"] == project][0]
 
-    requests_mock.get("/api/projects/{}".format(project), json=project_json)
+    api_project_path = "/api/{}".format(testspace_api.get_project_path(project))
+
+    requests_mock.get(api_project_path, json=project_json)
     response_json = testspace_api.get_project()
 
     assert project_json == load_json[0]
@@ -136,7 +140,9 @@ def test_get_project_id(load_json, testspace_api, requests_mock):
     project = 66035
     project_json = [item for item in load_json if item["id"] == project][0]
 
-    requests_mock.get("/api/projects/{}".format(project), json=project_json)
+    api_project_path = "/api/{}".format(testspace_api.get_project_path(project))
+
+    requests_mock.get(api_project_path, json=project_json)
     response_json = testspace_api.get_project(project)
 
     assert project == response_json["id"]
@@ -146,7 +152,9 @@ def test_post_projects(testspace_api, requests_mock):
     project = "abccorp:test"
     payload = {"name": project}
 
-    requests_mock.post("/api/projects", json=payload, status_code=201, headers=payload)
+    api_projects_path = "/api/{}".format(testspace_api.get_projects_path())
+
+    requests_mock.post(api_projects_path, json=payload, status_code=201, headers=payload)
     response_json = testspace_api.post_projects(payload=payload)
 
     assert payload == response_json
@@ -156,8 +164,10 @@ def test_patch_project(testspace_api, requests_mock):
     payload = {"description": "CI"}
     expected_status_code = 205
 
+    api_project_path = "/api/{}".format(testspace_api.get_project_path())
+
     requests_mock.patch(
-        "/api/projects/{}".format(testspace_api.project),
+        api_project_path,
         status_code=expected_status_code,
     )
     response = testspace_api.patch_project(payload=payload)
@@ -168,8 +178,10 @@ def test_patch_project(testspace_api, requests_mock):
 def test_delete_project(testspace_api, requests_mock):
     expected_status_code = 204
 
+    api_project_path = "/api/{}".format(testspace_api.get_project_path())
+
     requests_mock.delete(
-        "/api/projects/{}".format(testspace_api.project),
+        api_project_path,
         status_code=expected_status_code,
     )
     response_json = testspace_api.delete_project()
@@ -183,7 +195,9 @@ def test_get_project_param(load_json, testspace_api, requests_mock):
 
     project_json = [item for item in load_json if item["name"] == project][0]
 
-    requests_mock.get("/api/projects/{}".format(project), json=project_json)
+    api_project_path = "/api/{}".format(testspace_api.get_project_path(project))
+
+    requests_mock.get(api_project_path, json=project_json)
     response_json = testspace_api.get_project(project)
 
     assert response_json == project_json
@@ -202,9 +216,9 @@ def test_get_project_none(testspace_api):
 
 @pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
 def test_get_spaces(load_json, testspace_api, requests_mock):
-    requests_mock.get(
-        "/api/projects/{}/spaces".format(testspace_api.project), json=load_json
-    )
+    api_spaces_path = "/api/{}".format(testspace_api.get_spaces_path())
+
+    requests_mock.get(api_spaces_path, json=load_json)
     response_json = testspace_api.get_spaces()
 
     assert response_json == load_json
@@ -215,9 +229,11 @@ def test_post_spaces(load_json, testspace_api, requests_mock):
     space = "release"
     space_json = [item for item in load_json if item["name"] == space][0]
 
+    api_spaces_path = "/api/{}".format(testspace_api.get_spaces_path())
+
     payload = {"name": space}
     requests_mock.post(
-        "/api/projects/{}/spaces".format(testspace_api.project),
+        api_spaces_path,
         json=space_json,
         status_code=201,
     )
@@ -230,8 +246,10 @@ def test_patch_space(testspace_api, requests_mock):
     payload = {"description": "CI"}
     expected_status_code = 205
 
+    api_space_path = "/api/{}".format(testspace_api.get_space_path())
+
     requests_mock.patch(
-        "/api/projects/{}/spaces/{}".format(testspace_api.project, testspace_api.space),
+        api_space_path,
         status_code=expected_status_code,
     )
     response = testspace_api.patch_space(payload=payload)
@@ -241,8 +259,11 @@ def test_patch_space(testspace_api, requests_mock):
 
 def test_delete_space(testspace_api, requests_mock):
     expected_status_code = 204
+
+    api_space_path = "/api/{}".format(testspace_api.get_space_path())
+
     requests_mock.delete(
-        "/api/projects/{}/spaces/{}".format(testspace_api.project, testspace_api.space),
+        api_space_path,
         status_code=expected_status_code,
     )
     response = testspace_api.delete_space()
@@ -256,8 +277,10 @@ def test_get_space_name(load_json, testspace_api, requests_mock):
 
     space_json = [item for item in load_json if item["name"] == space][0]
 
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}".format(testspace_api.project, space),
+        api_space_path,
         json=space_json,
     )
     response_json = testspace_api.get_space()
@@ -268,11 +291,13 @@ def test_get_space_name(load_json, testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
 def test_get_space_param(load_json, testspace_api, requests_mock):
-    space = "feature"
+    space = "feature/abc"
     space_json = [item for item in load_json if item["name"] == space][0]
 
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}".format(testspace_api.project, space),
+        api_space_path,
         json=space_json,
     )
     response_json = testspace_api.get_space(space=space)
@@ -286,7 +311,9 @@ def test_get_space_id(load_json, testspace_api, requests_mock):
     space = 9732
     space_json = [item for item in load_json if item["id"] == space][0]
 
-    requests_mock.get("/api/spaces/{}".format(space), json=space_json)
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
+    requests_mock.get(api_space_path, json=space_json)
     response_json = testspace_api.get_space(space=space)
 
     assert response_json == space_json
@@ -307,10 +334,10 @@ def test_get_space_none(testspace_api):
 
 @pytest.mark.parametrize("load_json", ["results.json"], indirect=True)
 def test_get_results(load_json, testspace_api, requests_mock):
+    api_results_path = "/api/{}".format(testspace_api.get_results_path())
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results".format(
-            testspace_api.project, testspace_api.space
-        ),
+        api_results_path,
         json=load_json,
     )
     response_json = testspace_api.get_results()
@@ -323,10 +350,10 @@ def test_get_result_name(load_json, testspace_api, requests_mock):
     result = "result.1"
     result_json = [item for item in load_json if item["name"] == result][0]
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results/{}".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        api_result_path,
         json=result_json,
     )
     response_json = testspace_api.get_result(result)
@@ -338,11 +365,11 @@ def test_post_results(testspace_api, requests_mock):
     result_name = "result.1"
     result_json = {"id": 123456, "name": result_name}
 
+    api_results_path = "/api/{}".format(testspace_api.get_results_path())
+
     payload = {"name": result_name}
     requests_mock.post(
-        "/api/projects/{}/spaces/{}/results".format(
-            testspace_api.project, testspace_api.space
-        ),
+        api_results_path,
         json=result_json,
         status_code=201,
     )
@@ -355,10 +382,10 @@ def test_delete_result_name(testspace_api, requests_mock):
     result = "result.1"
     expected_status_code = 204
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.delete(
-        "/api/projects/{}/spaces/{}/results/{}".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        api_result_path,
         status_code=expected_status_code,
     )
     response = testspace_api.delete_result(result)
@@ -371,10 +398,10 @@ def test_get_result_id(load_json, testspace_api, requests_mock):
     result = 35977
     result_json = [item for item in load_json if item["id"] == result][0]
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results/{}".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        api_result_path,
         json=result_json,
     )
     response_json = testspace_api.get_result(result)
@@ -386,10 +413,10 @@ def test_get_result_id(load_json, testspace_api, requests_mock):
 def test_get_result_failures(load_json, testspace_api, requests_mock):
     result = 35977
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results/{}/failures".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        "{}/failures".format(api_result_path),
         json=load_json,
     )
     response_json = testspace_api.get_result_failures(result)
@@ -401,10 +428,10 @@ def test_get_result_failures(load_json, testspace_api, requests_mock):
 def test_get_result_contents(load_json, testspace_api, requests_mock):
     result = 35977
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results/{}/contents".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        "{}/contents".format(api_result_path),
         json=load_json,
     )
     response_json = testspace_api.get_result_contents(result)
@@ -416,10 +443,10 @@ def test_get_result_contents(load_json, testspace_api, requests_mock):
 def test_get_result_contents_nested(load_json, testspace_api, requests_mock):
     result = 35977
 
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/results/{}/contents/tests".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        "{}/contents/tests".format(api_result_path),
         json=load_json,
     )
     response_json = testspace_api.get_result_contents(result, contents_path="tests")
@@ -432,10 +459,11 @@ def test_patch_result(testspace_api, requests_mock):
 
     expected_status_code = 205
     payload = {"complete": False}
+
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
     requests_mock.patch(
-        "/api/projects/{}/spaces/{}/results/{}".format(
-            testspace_api.project, testspace_api.space, result
-        ),
+        api_result_path,
         status_code=expected_status_code,
     )
     response = testspace_api.patch_result(payload, result)
@@ -445,10 +473,10 @@ def test_patch_result(testspace_api, requests_mock):
 
 @pytest.mark.parametrize("load_json", ["metrics.json"], indirect=True)
 def test_get_metrics(load_json, testspace_api, requests_mock):
+    api_metrics_path = "/api/{}".format(testspace_api.get_metrics_path())
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/metrics".format(
-            testspace_api.project, testspace_api.space
-        ),
+        api_metrics_path,
         json=load_json,
     )
     response_json = testspace_api.get_metrics()
@@ -461,10 +489,10 @@ def test_get_metric_id(load_json, testspace_api, requests_mock):
     metric = 94551
     result_json = [item for item in load_json if item["id"] == metric][0]
 
+    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/metrics/{}".format(
-            testspace_api.project, testspace_api.space, metric
-        ),
+        api_metric_path,
         json=result_json,
     )
     response_json = testspace_api.get_metric(metric)
@@ -483,11 +511,11 @@ def test_post_metrics(testspace_api, requests_mock):
     metric_name = "Health"
     result_json = {"id": 123456, "name": metric_name}
 
+    api_metrics_path = "/api/{}".format(testspace_api.get_metrics_path())
+
     payload = {"name": metric_name}
     requests_mock.post(
-        "/api/projects/{}/spaces/{}/metrics".format(
-            testspace_api.project, testspace_api.space
-        ),
+        api_metrics_path,
         json=result_json,
         status_code=201,
     )
@@ -500,10 +528,10 @@ def test_delete_metric_id(testspace_api, requests_mock):
     metric = 35977
     expected_status_code = 204
 
+    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric))
+
     requests_mock.delete(
-        "/api/projects/{}/spaces/{}/metrics/{}".format(
-            testspace_api.project, testspace_api.space, metric
-        ),
+        api_metric_path,
         status_code=expected_status_code,
     )
     response = testspace_api.delete_metric(metric)
@@ -516,10 +544,11 @@ def test_patch_metric(testspace_api, requests_mock):
 
     expected_status_code = 205
     payload = {"name": False}
+
+    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric_id))
+
     requests_mock.patch(
-        "/api/projects/{}/spaces/{}/metrics/{}".format(
-            testspace_api.project, testspace_api.space, metric_id
-        ),
+        api_metric_path,
         status_code=expected_status_code,
     )
     response = testspace_api.patch_metric(payload, metric_id)
@@ -531,10 +560,10 @@ def test_patch_metric(testspace_api, requests_mock):
 def test_get_metric_datasets_by_id(load_json, testspace_api, requests_mock):
     metric = 34456
 
+    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric))
+
     requests_mock.get(
-        "/api/projects/{}/spaces/{}/metrics/{}/datasets".format(
-            testspace_api.project, testspace_api.space, metric
-        ),
+        "{}/datasets".format(api_metric_path),
         json=load_json,
     )
     response_json = testspace_api.get_metric_datasets(metric)
