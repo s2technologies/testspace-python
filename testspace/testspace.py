@@ -230,7 +230,7 @@ class Testspace:
                 project = self.project
             else:
                 raise ValueError
-        return "/".join([self.get_projects_path(), str(project)])
+        return "/".join([self.get_projects_path(), self._url_escape(project)])
 
     def get_spaces_path(self, project=None):
         return "/".join([self.get_project_path(project), "spaces"])
@@ -243,13 +243,13 @@ class Testspace:
                 space = self.space
             else:
                 raise ValueError
-        return "/".join([self.get_spaces_path(project), str(space)])
+        return "/".join([self.get_spaces_path(project), self._url_escape(space)])
 
     def get_results_path(self, project=None, space=None):
         return "/".join([self.get_space_path(project, space), "results"])
 
     def get_result_path(self, result, project=None, space=None):
-        return "/".join([self.get_results_path(project, space), str(result)])
+        return "/".join([self.get_results_path(project, space), self._url_escape(result)])
 
     def get_metrics_path(self, project=None, space=None):
         return "/".join([self.get_space_path(project, space), "metrics"])
@@ -276,3 +276,6 @@ class Testspace:
         )
         response.raise_for_status()
         return response
+
+    def _url_escape(self, value):
+        return requests.utils.quote(str(value))
