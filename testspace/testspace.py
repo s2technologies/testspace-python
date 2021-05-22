@@ -278,4 +278,4 @@ class Testspace:
         return response
 
     def _url_escape(self, value):
-        return requests.utils.quote(str(value))
+        return requests.utils.quote(str(value), safe='')
