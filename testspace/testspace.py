@@ -113,6 +113,25 @@ class Testspace:
             limit=limit,
         )
 
+    def get_result_contents_details(
+        self, details, result, contents_path=None, project=None, space=None
+    ):
+        folder = self.get_result_contents(result, contents_path,project, space, limit=None)
+        for item in folder:
+            if (item["type"] == "suite" or item["type"] == "suite (manual)") and item["suite_contents_url"] != None:
+                suite = {}
+                suite["id"]   = item["path"]
+                suite["name"] = item["name"]
+                cases = self.get_request_json(item['suite_contents_url'])
+                suite["cases"]  = cases
+                details.append(suite) # details is an "mutable list"; being populated while traversing the hierarchy 
+                # Logging
+                print("Folder: {}".format(item["path"]))
+                print("  Suite: {} ".format(item["name"] ))
+                print("    cases({})".format(len(cases)))
+            elif item["type"] == "folder": self.get_result_contents_details(details, result, item["path"]) 
+        return
+
     def get_metrics(self, project=None, space=None, limit=30):
         return self.get_request_json(self.get_metrics_path(project, space), limit=limit)
 
