@@ -113,22 +113,6 @@ class Testspace:
             limit=limit,
         )
 
-    def get_result_contents_details(
-        self, details, result, contents_path=None, project=None, space=None
-    ):
-        folder = self.get_result_contents(result, contents_path,project, space, limit=None)
-        for item in folder:
-            if (item["type"] == "suite" or item["type"] == "suite (manual)") and item["suite_contents_url"] != None:
-                suite = {}
-                suite["id"]   = item["path"]
-                suite["name"] = item["name"]
-
-                cases = self.get_request_json(item['suite_contents_url'])
-                suite["cases"]  = cases
-                details.append(suite) # details is an "mutable list"; being populated while traversing the hierarchy 
-            elif item["type"] == "folder": self.get_result_contents_details(details, result, item["path"]) 
-        return
-
     def get_result_cases(
         self, case_list, result, contents_path=None, project=None, space=None
     ):
@@ -141,7 +125,6 @@ class Testspace:
                     case["path"]  = item["path"].replace(item["name"],'')
                     case["index"] = case["path"] + case["suite"] + '().' + case["name"]
                     case_list.append(case) # details is an "mutable list"; being populated while traversing the hierarchy 
-
             elif item["type"] == "folder": self.get_result_cases(case_list, result, item["path"]) 
         return
 
