@@ -125,7 +125,7 @@ class Testspace:
                     case["path"]  = item["path"].replace(item["name"],'')
                     case["index"] = case["path"] + case["suite"] + '().' + case["name"]
                     case_list.append(case) # details is an "mutable list"; being populated while traversing the hierarchy 
-            elif item["type"] == "folder": self.get_result_cases(case_list, result, item["path"]) 
+            elif item["type"] == "folder": self.get_result_cases(case_list, result, item["path"], project, space) 
         return
 
     def get_metrics(self, project=None, space=None, limit=30):
