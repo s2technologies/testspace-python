@@ -1,11 +1,11 @@
 # testspace-python
 
-Python module to use Testspace API and client. Provides a python object that can manage the following Testspace items:  url, token, project name and space name. It also provides functions to push results and handle most common API requests.
+Python module to use [Testspace](https://www.testspace.com/) API and client. Provides a python object that can manage the following Testspace items:  url, token, project name and space name. It also provides functions to push results and handle most common API requests.
 
 ## Usage
 To use the module the items listed below are needed.
 * Organization url (organization.testspace.com)
-* [Testspace token](https://help.testspace.com/docs/dashboard/admin-user#account)
+* [Testspace token](https://help.testspace.com/dashboard/admin-user#account)
 * Project name (optional)
 * Space name (optional)
 
@@ -20,25 +20,26 @@ testspace = ts.Testspace(token=token, url=url, project=project, space=space)
 ```
 
 ## Testspace Client
-Provides a python wrapper to use the [Testspace client](https://help.testspace.com/docs/reference/testspace-client) for pushing content to [Testspace](https://www.testspace.com/). Optional parameters to this function are available to provide the name of file to push, name of the result set and how.
+Provides a python wrapper to use the [Testspace client](https://help.testspace.com/reference/testspace-client) for pushing content to [Testspace](https://www.testspace.com/). Optional parameters to this function are available to provide the name of file to push, name of the result set and how.
 
 ### Example
 ```
 testspace = ts.Testspace(token=token, url=url, project=project, space=space)
 testspace.push(file="testresults.xml", result_name="build.1", how="full")
 ```
-The following Testspace client [options](https://help.testspace.com/docs/reference/testspace-client#push) are also supported as parameters to the push function.
+The following Testspace client [options](https://help.testspace.com/reference/testspace-client#push) are also supported as parameters to the push function.
 
 |Client Option   | Function Parameter   |
 |---|---|
 |build-url|build_url|
+|build-status|build_status|
 |repo|repo|
 |link|link|
 |message|message|
 
 
 ## Testspace API
-Provides a python wrapper for the [Testspace API](https://help.testspace.com/docs/reference/web-api). The available functions mirror the structure of the documented API endpoints, with GET, POST, PATCH, and DELETE options available as appropriate for the endpoint. Where names in addition to id's are supported in the API, they can be used interchangably here as well. All functions return any JSON response as a result of the request, see Testspace API [help](https://help.testspace.com/docs/reference/web-api) for details of each response. For any Testspace API that returns a list, the page size default limit of 30 is used, for any of these function the `limit` parameter can be added with an integer value for the desired maximum number of returned items. All requests are checked with raise_for_status with the expectation that any exceptions will be appropriately handled by user of the module.
+Provides a python wrapper for the [Testspace API](https://help.testspace.com/reference/web-api). The available functions mirror the structure of the documented API endpoints, with GET, POST, PATCH, and DELETE options available as appropriate for the endpoint. Where names in addition to id's are supported in the API, they can be used interchangably here as well. All functions return any JSON response as a result of the request, see Testspace API [help](https://help.testspace.com/reference/web-api) for details of each response. For any Testspace API that returns a list, the page size default limit of 30 is used, for any of these function the `limit` parameter can be added with an integer value for the desired maximum number of returned items. All requests are checked with raise_for_status with the expectation that any exceptions will be appropriately handled by user of the module.
 
 ### Projects
 ##### Get List of Projects
