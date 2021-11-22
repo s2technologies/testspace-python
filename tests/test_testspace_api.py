@@ -122,7 +122,7 @@ def test_get_projects_paginated_limited(load_json, testspace_api, requests_mock)
 
 
 @pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
-def test_get_project_name(load_json, testspace_api, requests_mock):
+def test_get_project_default(load_json, testspace_api, requests_mock):
     project = testspace_api.project
     project_json = [item for item in load_json if item["name"] == project][0]
 
@@ -146,6 +146,31 @@ def test_get_project_id(load_json, testspace_api, requests_mock):
     response_json = testspace_api.get_project(project)
 
     assert project == response_json["id"]
+
+
+@pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
+def test_get_project_name(load_json, testspace_api, requests_mock):
+    project = "abccorp:server"
+
+    project_json = [item for item in load_json if item["name"] == project][0]
+
+    api_project_path = "/api/{}".format(testspace_api.get_project_path(project))
+
+    requests_mock.get(api_project_path, json=project_json)
+    response_json = testspace_api.get_project(project)
+
+    assert response_json == project_json
+    assert project == response_json["name"]
+
+
+def test_get_project_none(testspace_api):
+    token = testspace_api.token
+    url = testspace_api.url
+    project = None
+    testspace_api_none_project = ts.Testspace(token, url)
+
+    with pytest.raises(Exception):
+        testspace_api_none_project.get_project(project)
 
 
 def test_post_projects(testspace_api, requests_mock):
@@ -189,31 +214,6 @@ def test_delete_project(testspace_api, requests_mock):
     assert response_json.status_code == expected_status_code
 
 
-@pytest.mark.parametrize("load_json", ["projects.json"], indirect=True)
-def test_get_project_param(load_json, testspace_api, requests_mock):
-    project = "abccorp:server"
-
-    project_json = [item for item in load_json if item["name"] == project][0]
-
-    api_project_path = "/api/{}".format(testspace_api.get_project_path(project))
-
-    requests_mock.get(api_project_path, json=project_json)
-    response_json = testspace_api.get_project(project)
-
-    assert response_json == project_json
-    assert project == response_json["name"]
-
-
-def test_get_project_none(testspace_api):
-    token = testspace_api.token
-    url = testspace_api.url
-    project = None
-    testspace_api_none_project = ts.Testspace(token, url)
-
-    with pytest.raises(Exception):
-        testspace_api_none_project.get_project(project)
-
-
 @pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
 def test_get_spaces(load_json, testspace_api, requests_mock):
     api_spaces_path = "/api/{}".format(testspace_api.get_spaces_path())
@@ -222,6 +222,67 @@ def test_get_spaces(load_json, testspace_api, requests_mock):
     response_json = testspace_api.get_spaces()
 
     assert response_json == load_json
+
+
+@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
+def test_get_space_default(load_json, testspace_api, requests_mock):
+    space = testspace_api.space
+
+    space_json = [item for item in load_json if item["name"] == space][0]
+
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
+    requests_mock.get(
+        api_space_path,
+        json=space_json,
+    )
+    response_json = testspace_api.get_space()
+
+    assert response_json == space_json
+    assert space == response_json["name"]
+
+
+@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
+def test_get_space_name(load_json, testspace_api, requests_mock):
+    space = "feature/abc"
+    space_json = [item for item in load_json if item["name"] == space][0]
+
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
+    requests_mock.get(
+        api_space_path,
+        json=space_json,
+    )
+    response_json = testspace_api.get_space(space=space)
+
+    assert response_json == space_json
+    assert space == response_json["name"]
+
+
+@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
+def test_get_space_id(load_json, testspace_api, requests_mock):
+    space = 9732
+    space_json = [item for item in load_json if item["id"] == space][0]
+
+    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
+
+    requests_mock.get(api_space_path, json=space_json)
+    response_json = testspace_api.get_space(space=space)
+
+    assert response_json == space_json
+    assert space == response_json["id"]
+
+
+def test_get_space_none(testspace_api):
+    token = testspace_api.token
+    url = testspace_api.url
+    project = testspace_api.project
+    space = None
+
+    testspace_api_none_project = ts.Testspace(token, url, project)
+
+    with pytest.raises(Exception):
+        testspace_api_none_project.get_space(space)
 
 
 @pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
@@ -271,67 +332,6 @@ def test_delete_space(testspace_api, requests_mock):
     assert response.status_code == expected_status_code
 
 
-@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
-def test_get_space_name(load_json, testspace_api, requests_mock):
-    space = testspace_api.space
-
-    space_json = [item for item in load_json if item["name"] == space][0]
-
-    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
-
-    requests_mock.get(
-        api_space_path,
-        json=space_json,
-    )
-    response_json = testspace_api.get_space()
-
-    assert response_json == space_json
-    assert space == response_json["name"]
-
-
-@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
-def test_get_space_param(load_json, testspace_api, requests_mock):
-    space = "feature/abc"
-    space_json = [item for item in load_json if item["name"] == space][0]
-
-    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
-
-    requests_mock.get(
-        api_space_path,
-        json=space_json,
-    )
-    response_json = testspace_api.get_space(space=space)
-
-    assert response_json == space_json
-    assert space == response_json["name"]
-
-
-@pytest.mark.parametrize("load_json", ["spaces.json"], indirect=True)
-def test_get_space_id(load_json, testspace_api, requests_mock):
-    space = 9732
-    space_json = [item for item in load_json if item["id"] == space][0]
-
-    api_space_path = "/api/{}".format(testspace_api.get_space_path(space=space))
-
-    requests_mock.get(api_space_path, json=space_json)
-    response_json = testspace_api.get_space(space=space)
-
-    assert response_json == space_json
-    assert space == response_json["id"]
-
-
-def test_get_space_none(testspace_api):
-    token = testspace_api.token
-    url = testspace_api.url
-    project = testspace_api.project
-    space = None
-
-    testspace_api_none_project = ts.Testspace(token, url, project)
-
-    with pytest.raises(Exception):
-        testspace_api_none_project.get_space(space)
-
-
 @pytest.mark.parametrize("load_json", ["results.json"], indirect=True)
 def test_get_results(load_json, testspace_api, requests_mock):
     api_results_path = "/api/{}".format(testspace_api.get_results_path())
@@ -344,6 +344,21 @@ def test_get_results(load_json, testspace_api, requests_mock):
 
     assert response_json == load_json
 
+
+@pytest.mark.parametrize("load_json", ["results.json"], indirect=True)
+def test_get_result_id(load_json, testspace_api, requests_mock):
+    result = 35977
+    result_json = [item for item in load_json if item["id"] == result][0]
+
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
+    requests_mock.get(
+        api_result_path,
+        json=result_json,
+    )
+    response_json = testspace_api.get_result(result)
+
+    assert response_json["id"] == result
 
 @pytest.mark.parametrize("load_json", ["results.json"], indirect=True)
 def test_get_result_name(load_json, testspace_api, requests_mock):
@@ -378,6 +393,23 @@ def test_post_results(testspace_api, requests_mock):
     assert result_name == response_json["name"]
 
 
+def test_patch_result(testspace_api, requests_mock):
+    result = 35977
+
+    expected_status_code = 205
+    payload = {"complete": False}
+
+    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
+
+    requests_mock.patch(
+        api_result_path,
+        status_code=expected_status_code,
+    )
+    response = testspace_api.patch_result(payload, result)
+
+    assert response.status_code == expected_status_code
+
+
 def test_delete_result_name(testspace_api, requests_mock):
     result = "result.1"
     expected_status_code = 204
@@ -392,21 +424,6 @@ def test_delete_result_name(testspace_api, requests_mock):
 
     assert response.status_code == expected_status_code
 
-
-@pytest.mark.parametrize("load_json", ["results.json"], indirect=True)
-def test_get_result_id(load_json, testspace_api, requests_mock):
-    result = 35977
-    result_json = [item for item in load_json if item["id"] == result][0]
-
-    api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
-
-    requests_mock.get(
-        api_result_path,
-        json=result_json,
-    )
-    response_json = testspace_api.get_result(result)
-
-    assert response_json["id"] == result
 
 
 @pytest.mark.parametrize("load_json", ["failures.json"], indirect=True)
@@ -454,19 +471,18 @@ def test_get_result_contents_nested(load_json, testspace_api, requests_mock):
     assert response_json == load_json
 
 
-def test_patch_result(testspace_api, requests_mock):
+@pytest.mark.parametrize("load_json", ["contents.json"], indirect=True)
+def test_delete_result_contents_nested(load_json, testspace_api, requests_mock):
     result = 35977
-
-    expected_status_code = 205
-    payload = {"complete": False}
+    expected_status_code = 204
 
     api_result_path = "/api/{}".format(testspace_api.get_result_path(result))
 
-    requests_mock.patch(
-        api_result_path,
+    requests_mock.delete(
+        "{}/contents/tests".format(api_result_path),
         status_code=expected_status_code,
     )
-    response = testspace_api.patch_result(payload, result)
+    response = testspace_api.delete_result_contents(result, contents_path="tests")
 
     assert response.status_code == expected_status_code
 
@@ -524,21 +540,6 @@ def test_post_metrics(testspace_api, requests_mock):
     assert metric_name == response_json["name"]
 
 
-def test_delete_metric_id(testspace_api, requests_mock):
-    metric = 35977
-    expected_status_code = 204
-
-    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric))
-
-    requests_mock.delete(
-        api_metric_path,
-        status_code=expected_status_code,
-    )
-    response = testspace_api.delete_metric(metric)
-
-    assert response.status_code == expected_status_code
-
-
 def test_patch_metric(testspace_api, requests_mock):
     metric_id = 35977
 
@@ -552,6 +553,21 @@ def test_patch_metric(testspace_api, requests_mock):
         status_code=expected_status_code,
     )
     response = testspace_api.patch_metric(payload, metric_id)
+
+    assert response.status_code == expected_status_code
+
+
+def test_delete_metric_id(testspace_api, requests_mock):
+    metric = 35977
+    expected_status_code = 204
+
+    api_metric_path = "/api/{}".format(testspace_api.get_metric_path(metric))
+
+    requests_mock.delete(
+        api_metric_path,
+        status_code=expected_status_code,
+    )
+    response = testspace_api.delete_metric(metric)
 
     assert response.status_code == expected_status_code
 
@@ -577,6 +593,6 @@ def test_get_status_403(testspace_api, requests_mock):
         testspace_api.get_api_endpoints()
 
 
-def test_get_request_json_invalid_limit(testspace_api):
+def test_paginate_request_invalid_limit(testspace_api):
     with pytest.raises(ValueError):
-        testspace_api.get_request_json(limit="10")
+        testspace_api.paginate_request(None, limit=-10)
