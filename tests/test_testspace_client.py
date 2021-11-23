@@ -24,7 +24,7 @@ def test_push(mocker, testspace_client):
     message = "test message"
 
     testspace_client.push(
-        file=file_name,
+        file_name,
         how=how,
         result_name=result_name,
         build_url=build_url,
@@ -47,8 +47,8 @@ def test_push(mocker, testspace_client):
     expected_push_command.append("--link={}".format(link))
     expected_push_command.append("--message={}".format(message))
 
-    mock_call_args = mock.call_args_list[0][0]
-    returned_push_command = mock_call_args[0]
+    mock_call_args = mock.call_args_list[0][0] # positional args of the first call
+    returned_push_command = mock_call_args[0] # first positional arg
     assert expected_push_command == returned_push_command
 
 

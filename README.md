@@ -25,7 +25,7 @@ Provides a python wrapper to use the [Testspace client](https://help.testspace.c
 ### Example
 ```
 testspace = ts.Testspace(token=token, url=url, project=project, space=space)
-testspace.push(file="testresults.xml", result_name="build.1", how="full")
+testspace.push("testresults.xml", result_name="build.1", how="full")
 ```
 The following Testspace client [options](https://help.testspace.com/reference/testspace-client#push) are also supported as parameters to the push function.
 
