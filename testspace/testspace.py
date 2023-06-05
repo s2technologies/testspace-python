@@ -27,19 +27,19 @@ class Testspace:
 
         command_args_list = ['testspace']
 
-        if file is not None:
+        if file:
             command_args_list.append(file)
 
         full_client_url = '/'.join([self.url, project, space])
 
         how = kwargs.get('how')
-        if how is not None:
+        if how:
             if how not in {'full', 'start', 'add', 'finish'}:
                 raise ValueError
             full_client_url = '{}?{}'.format(full_client_url, how)
 
         result_name = kwargs.get('result_name')
-        if result_name is not None:
+        if result_name:
             full_client_url = '{}#{}'.format(full_client_url, result_name)
         command_args_list.append(full_client_url)
 
@@ -50,6 +50,8 @@ class Testspace:
                 key = 'build-url'
             elif key == 'build_status':
                 key = 'build-status'
+            elif key == 'build_times':
+                key = 'build-times'
             elif key in {'project', 'space', 'file', 'result_name', 'how'}:
                 continue
 
@@ -162,8 +164,8 @@ class Testspace:
         response_json = response.json()
         if type(response_json) is list:
             next_url = response.links.get('next', None)
-            while next_url is not None:
-                if limit is not None and len(response_json) >= limit:
+            while next_url:
+                if limit and len(response_json) >= limit:
                     break
                 response = self._api_request('GET', path=next_url.get('url'))
                 next_url = response.links.get('next', None)
@@ -190,7 +192,7 @@ class Testspace:
 
     def get_project_path(self, project=None):
         if project is None:
-            if self.project is not None:
+            if self.project:
                 project = self.project
             else:
                 raise ValueError
@@ -203,7 +205,7 @@ class Testspace:
         if project is None and type(space) is int:
             return '/'.join(['spaces', str(space)])
         elif space is None:
-            if self.space is not None:
+            if self.space:
                 space = self.space
             else:
                 raise ValueError

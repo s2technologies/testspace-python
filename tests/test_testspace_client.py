@@ -19,6 +19,8 @@ def test_push(mocker, testspace_client):
     result_name = "build.1"
     how = "start"
     build_url = "http://ci.com/logs.txt"
+    build_status = "failure"
+    build_times = "1625309472:1685986673"
     repo = "git"
     link = "coveralls"
     message = "test message"
@@ -31,6 +33,8 @@ def test_push(mocker, testspace_client):
         repo=repo,
         link=link,
         message=message,
+        build_status=build_status,
+        build_times=build_times,
     )
 
     url = "{}/{}/{}?{}#{}".format(
@@ -46,6 +50,8 @@ def test_push(mocker, testspace_client):
     expected_push_command.append("--repo={}".format(repo))
     expected_push_command.append("--link={}".format(link))
     expected_push_command.append("--message={}".format(message))
+    expected_push_command.append("--build-status={}".format(build_status))
+    expected_push_command.append("--build-times={}".format(build_times))
 
     mock_call_args = mock.call_args_list[0][0] # positional args of the first call
     returned_push_command = mock_call_args[0] # first positional arg
