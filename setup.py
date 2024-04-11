@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='testspace-python',
-    version='',
+    version='0.1.5',
     packages=find_packages(include=['testspace', 'testspace.*']),
     url='',
     license="MIT license",
